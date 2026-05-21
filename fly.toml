@@ -1,0 +1,23 @@
+app = "upscalerjs-fly"
+
+primary_region = "sgp"  # or "hkg", "nrt" etc; pick region near your users
+
+[build]
+  dockerfile = "Dockerfile"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_start_machines = true
+  auto_stop_machines = true
+
+  [http_service.concurrency]
+    type = "requests"
+    hard_limit = 10
+    soft_limit = 5
+
+# Only needed if you want to tune memory/CPU
+[[vm]]
+  memory = "1024mb"
+  cpu_kind = "shared"
+  size = "shared-cpu-1x"
