@@ -1,25 +1,21 @@
-# Use a slim Node base with ONNX‑related deps in mind
 FROM node:18-alpine
 
-# Avoid TZ prompts etc.
-ENV TZ=UTC
 ENV NODE_ENV=production
+ENV CI=true
 
-# Install minimal deps for tfjs‑node (CPU)
-RUN apk add --no-cache python3 py3-pip build-base ffmpeg
+# Make sure npm is there
+RUN npm --version
 
 WORKDIR /app
 
-# Install tfjs‑node + upscaler (lock deps first)
+# Copy package files first
 COPY package*.json ./
+
+# Use npm install if you don’t strictly need ci
 RUN npm ci --omit=dev
 
 # Copy source
 COPY server.js ./
-
-# Models: this example relies on the default model shipped with upscaler
-# If you want to cache a specific model, seed it in /tmp or /models
-# and mount a volume; for Fly, keep it simple and download on first run.
 
 EXPOSE 3000
 
